@@ -30,7 +30,7 @@ public class Main {
 														6, 8,					//min/max subgraphs
 														20, 60);				//min/max size of subgraphs
 
-		System.out.println(g.toString());
+		//System.out.println(g.toString());
 	
 		///////////////////////////////////////////////////////////////////////////////////
 		
