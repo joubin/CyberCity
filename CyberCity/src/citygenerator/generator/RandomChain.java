@@ -23,7 +23,9 @@ public class RandomChain extends Graph {
 		CityNode cn = new Building(name + "-" + getNodes().size(), point);
 		CityEdge ce = new Road();
 		
+		
 		if(lastNode != null) {
+			ce.setNodes(lastNode, cn);
 			addEdge(lastNode, cn, ce);
 		}
 		

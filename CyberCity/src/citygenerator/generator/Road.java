@@ -62,11 +62,15 @@ public class Road implements CityEdge {
 	@Override
 	public CityEdge getReverse(){
 		Road reverseRoad = new Road();
-		reverseRoad.setNodes(to, from);
+		reverseRoad.setNodes(to,from);
 		reverseRoad.setLength(length);
 		reverseRoad.setElectricFlowCap(getElectricFlowCap());
 		reverseRoad.setWaterFlowCap(getWaterFlowCap());
 		return reverseRoad;
+	}
+	
+	public String toString(){
+		return "From " + from + " to " + to;
 	}
 	
 }

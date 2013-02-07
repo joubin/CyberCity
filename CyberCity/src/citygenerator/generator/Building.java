@@ -50,4 +50,8 @@ public class Building implements CityNode {
 	public void addAdjacentNode(CityNode to) {
 		adjacentNodes.add(to);
 	}
+	
+	public String toString(){
+		return getName();
+	}
 }

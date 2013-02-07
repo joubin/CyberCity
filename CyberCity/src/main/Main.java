@@ -11,6 +11,7 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 
 import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.FPSAnimator;
 
 import citygenerator.visualization.JOGLGraph;
 
@@ -63,7 +64,7 @@ public class Main {
         canvas.addMouseWheelListener(joglGraph);
         canvas.addMouseMotionListener(joglGraph);
         
-        Animator animator = new Animator(canvas);
+        FPSAnimator animator = new FPSAnimator(canvas, 60);
         animator.add(canvas);
         animator.start();
 	}

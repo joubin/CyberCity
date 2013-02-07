@@ -2,6 +2,8 @@ package citygenerator.graph;
 
 import java.util.ArrayList;
 
+import citygenerator.generator.Road;
+
 public abstract class Graph implements Locale{
 
 	private ArrayList<CityNode> nodes = new ArrayList<CityNode>();
@@ -33,10 +35,10 @@ public abstract class Graph implements Locale{
 	/**
 	 * Handles everything needed to connect two nodes.
 	 * <p>
-	 * 1) Creates an edge from n1 to n2
-	 * 2) Duplicates the given edge from n2 to n1
-	 * 3) Adds n2 to n1's adjacent node list
-	 * 4) Adds n1 to n2's adjacent node list
+	 * 1) Creates an edge from n1 to n2 <p>
+	 * 2) Duplicates the given edge from n2 to n1 <p>
+	 * 3) Adds n2 to n1's adjacent node list <p>
+	 * 4) Adds n1 to n2's adjacent node list <p>
 	 * @param n1	the first node
 	 * @param n2	the second node
 	 * @param edge	the edge to connect the two nodes
@@ -46,7 +48,7 @@ public abstract class Graph implements Locale{
 		boolean edgeExists = false, reverseExists = false;
 		for (CityEdge e : edges){
 			CityNode from = e.getFromNode(), to = e.getToNode();
-			if(from.equals(n1) && to.equals(n2)){
+			if(from.getName().equals(n1.getName()) && to.getName().equals(n2.getName())){
 				edgeExists = true;
 			}
 			if(from.equals(n2) && to.equals(n1)){
@@ -59,7 +61,8 @@ public abstract class Graph implements Locale{
 		}
 
 		if(!reverseExists){
-			edges.add(edge.getReverse());
+			CityEdge reverseRoad = edge.getReverse();
+			edges.add(reverseRoad);
 			n2.addAdjacentNode(n1);
 		}
 	}
