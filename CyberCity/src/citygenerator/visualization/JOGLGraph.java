@@ -21,7 +21,7 @@ import javax.media.opengl.glu.GLU;
 public class JOGLGraph implements GLEventListener, MouseListener,
 		MouseWheelListener, MouseMotionListener {
 
-	private Point3D size;
+	private Point3D size; //TODO
 	private ArrayList<Point3D> points = new ArrayList<Point3D>();
 	private HashMap<Point3D, ArrayList<Point3D>> edges = new HashMap<Point3D, ArrayList<Point3D>>();
 

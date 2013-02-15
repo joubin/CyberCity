@@ -69,4 +69,20 @@ public interface Locale {
 	 * @return	a newly created CityNode
 	 */
 	public CityNode setFirst(Point3D startPoint);
+	
+	/**
+	 * This function will return a CityNode that is on the edge of the Locale that is on the same side as otherPoint
+	 * @param otherPoint	the Point3D that is on the same side of the Locale as the returned CityNode
+	 * @return	a CityNode that is on the same side of the Locale as otherPoint
+	 */
+	public CityNode getEdgeNode(Point3D otherPoint);
+	
+//	/**
+//	 * This function will analyze a point and determine if it is "occupied".
+//	 * <p>
+//	 * "Occupied" will usually simply mean whether or not the point is inside of the Locale's bounds, but not always.
+//	 * @param point
+//	 * @return
+//	 */
+//	public boolean isPointOccupied(Point3D point);
 }

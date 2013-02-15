@@ -1,24 +1,21 @@
 package citygenerator.generator;
 
 import java.awt.Point;
-import java.sql.SQLClientInfoException;
-import java.util.ArrayList;
 import java.util.Random;
 
-import citygenerator.graph.CityEdge;
 import citygenerator.graph.CityNode;
 import citygenerator.graph.Graph;
 import citygenerator.graph.Point3D;
 
 public class CityGenerator {
 
-	Random rand = new Random();
+	private Random rand = new Random();
 	private HeightMapGenerator heightMapGenerator;
-	private HeightMapGenerator hmg;
 	private double[][] heightMap;
 	
+	private Downtown parent =  new Downtown("parent");
+	
 	public CityGenerator(HeightMapGenerator hmg) {
-		this.hmg = hmg;
 		heightMap = hmg.getMap();
 		rand.setSeed(System.currentTimeMillis());
 	}
@@ -29,8 +26,6 @@ public class CityGenerator {
 										int minSubs, int maxSubs,
 										double minSubSize, double maxSubSize)
 										throws IllegalAccessException, InstantiationException {
-
-		Downtown parent =  new Downtown("parent");
 		
 		parent.setMinimumPoint(new Point3D(minX, minY, minZ));
 		parent.setMaxSize(maxNodes * maxSubs);
@@ -42,22 +37,28 @@ public class CityGenerator {
 		} else
 			randSubs = 0;
 		
+		Point3D lastConnectPoint = null;
+		CityNode lastConnector = null;
+		Downtown lastDowntown = null;
 		for(int i = 0; i < randSubs + minSubs; i++){
-			Downtown sg = new Downtown("rc" + i);
+			Downtown sg = new Downtown("downtown" + i);
 			
 			int numberOfNodes = (int) (rand.nextFloat() * (float) (maxNodes - minNodes)) + minNodes;
 			
 			double size = rand.nextInt((int) (maxSubSize - minSubSize)) + minSubSize;
 			
+			Point3D corner = null;
+			//while(!isLocationValid(corner, new Point3D(size,size,size))) {
 			double startX = (double)rand.nextInt((int) (width-size));
 			double startZ = (double)rand.nextInt((int) (depth-size));
 			double startY = getHeight(startX,startZ);
 			
-			Point3D corner = 
-					new Point3D(
-						startX, 
-						startY, 
-						startZ);
+			corner = 
+				new Point3D(
+					startX, 
+					startY, 
+					startZ);
+			//}
 			
 			sg.setMinimumPoint(corner);
 			sg.setMaxSize(numberOfNodes);
@@ -72,12 +73,23 @@ public class CityGenerator {
 					next = sg.setNext(new Point3D(xz.x, getHeight(xz.x, xz.y), xz.y));
 				}
 				
-//				if(j == 0){
-//					if(parent.getLastNode() != null){
-//						parent.addEdge(parent.getLastNode(), next, new Road());
-//					}
-//					parent.setLastNode(next);
-//				}	
+				if(j == numberOfNodes-1){
+					if(lastConnectPoint == null) {
+						lastConnectPoint = new Point3D(corner.x + size, corner.y, corner.z + size);
+						lastDowntown = sg;
+					} else {
+						CityNode connectNode = sg.getEdgeNode(lastConnectPoint);
+						
+						lastConnector = lastDowntown.getEdgeNode(connectNode.getCoordinates());
+						
+						Road connector = new Road();
+						connector.setNodes(lastConnector, connectNode);
+						parent.addEdge(lastConnector, connectNode, connector);
+						
+						lastConnectPoint = new Point3D(corner.x + size, corner.y, corner.z + size);
+						lastDowntown = sg;
+					}
+				}	
 			}
 			
 			parent.addSubGraph(sg);			
@@ -86,6 +98,24 @@ public class CityGenerator {
 		return parent;
 	}
 
+//	private boolean isLocationValid(Point3D corner, Point3D size) {
+//		if (corner == null)
+//			return false;
+//		
+//		for(Graph sg : parent.getSubGraphs()){
+//			//If any of the new corners are in an existing subgraph, return false
+//			if(	sg.isPointOccupied(corner) ||
+//				sg.isPointOccupied(new Point3D(corner.x + size.x, corner.y, corner.z)) ||
+//				sg.isPointOccupied(new Point3D(corner.x, corner.y, corner.z + size.z)) ||
+//				sg.isPointOccupied(new Point3D(corner.x + size.x, corner.y, corner.z + size.z))
+//				)
+//				return false;
+//			
+//			// TODO If any of the existing subgraphs have corners inside of the new subgraph, return false
+//		}
+//		
+//		return true;
+//	}
 
 	public void setHeightMapGenerator(HeightMapGenerator hmg){
 		this.heightMapGenerator = hmg;

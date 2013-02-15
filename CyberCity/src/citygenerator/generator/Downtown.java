@@ -2,6 +2,7 @@ package citygenerator.generator;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 import citygenerator.graph.CityEdge;
 import citygenerator.graph.CityNode;
@@ -116,6 +117,59 @@ public class Downtown extends Graph {
 			currentZ = 0;
 			currentX++;
 		}
+	}
+
+	@Override
+	public CityNode getEdgeNode(Point3D otherPoint) {
+		boolean isBelowX, isBelowZ;
+		Point3D middle = new Point3D(minimumPoint.x + size.x, minimumPoint.y, minimumPoint.z + size.z);
+		
+		if(otherPoint.x < middle.x)
+			isBelowX = true;
+		else {
+			isBelowX = false;
+		}
+		
+		if(otherPoint.z < middle.z)
+			isBelowZ = true;
+		else {
+			isBelowZ = false;
+		}
+		
+		
+		boolean isXVar = Math.abs(otherPoint.z - middle.z) >  Math.abs(otherPoint.x - middle.x) ? true : false;
+		int x, z;
+		
+		x = new Random().nextInt(root);
+		
+		if(isXVar){
+			if(isBelowZ)
+				z=0;
+			else {
+				if(x==root-1)
+					z=currentZ-1;
+				else
+					z = root - 1;
+			}
+		} else {
+			if(isBelowX){
+				x=0;
+				z = new Random().nextInt(root);
+			}
+			else{
+				x=root-1;
+				if(currentZ > 0)
+					z = new Random().nextInt(currentZ-1);
+				else
+					z = new Random().nextInt(root-1);
+			}
+			
+		}
+		
+		while(grid[x][z] == null){
+			x--;
+		};
+		return grid[x][z];
 	}
 
 }

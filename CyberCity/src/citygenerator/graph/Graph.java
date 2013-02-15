@@ -2,14 +2,11 @@ package citygenerator.graph;
 
 import java.util.ArrayList;
 
-import citygenerator.generator.Road;
-
 public abstract class Graph implements Locale{
 
 	private ArrayList<CityNode> nodes = new ArrayList<CityNode>();
 	private ArrayList<CityEdge> edges = new ArrayList<CityEdge>();
 	private ArrayList<Graph> subGraphs = new ArrayList<Graph>();
-	protected CityNode lastNode; //TODO FIXME remove
 	protected Point3D size;
 	protected Point3D minimumPoint;
 	protected String name;
@@ -137,15 +134,6 @@ public abstract class Graph implements Locale{
 		return allEdges;
 	}
 	
-	
-	public void setLastNode(CityNode cn){
-		this.lastNode = cn;
-	}
-	
-	public CityNode getLastNode(){
-		return lastNode;
-	}
-	
 	public void setSize(Point3D sizes){
 		this.size = sizes;
 	}
@@ -162,4 +150,15 @@ public abstract class Graph implements Locale{
 		this.minimumPoint = minPoint3d;
 	}
 
+//	@Override
+//	public boolean isPointOccupied(Point3D point){
+//		boolean outsideX = point.x < minimumPoint.x || point.x > minimumPoint.x + size.x;
+//		boolean outsizeZ = point.z < minimumPoint.z || point.z > minimumPoint.z + size.z;
+//		
+//		if(outsideX && outsizeZ){
+//			return false;
+//		}
+//		return true;
+//	}
+	
 }

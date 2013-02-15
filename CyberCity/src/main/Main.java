@@ -3,14 +3,11 @@ package main;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 
-import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import citygenerator.visualization.JOGLGraph;
@@ -28,7 +25,7 @@ public class Main {
 		Graph g = cityGenerator.getRandomChainGraph(	0, 0, 0,				//top left (x,y,z)
 														513, 513, 513,		 	//bottom right (x,y,z)
 														81, 144, 				//min/max nodes per subgraph
-														6, 8,					//min/max subgraphs
+														10, 11,					//min/max subgraphs
 														20, 60);				//min/max size of subgraphs
 
 		//System.out.println(g.toString());
@@ -40,11 +37,13 @@ public class Main {
         GLCanvas canvas = new GLCanvas(caps);
         
         Frame frame = new Frame("Graph Generator");
-        frame.setSize(300, 300);
         frame.add(canvas);
-    	frame.setUndecorated(true);
+
     	GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     	GraphicsDevice gd = ge.getDefaultScreenDevice();
+    	//frame.setVisible(true);
+    	
+    	frame.setUndecorated(true);
     	gd.setFullScreenWindow(frame);
 
         
