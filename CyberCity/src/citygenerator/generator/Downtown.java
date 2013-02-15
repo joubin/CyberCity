@@ -158,8 +158,8 @@ public class Downtown extends Graph {
 			}
 			else{
 				x=root-1;
-				if(currentZ > 0)
-					z = new Random().nextInt(currentZ);
+				if(currentZ > 1)
+					z = new Random().nextInt(currentZ - 1);
 				else
 					z = new Random().nextInt(root-1);
 			}
