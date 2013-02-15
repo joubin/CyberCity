@@ -25,7 +25,7 @@ public class Main {
 		Graph g = cityGenerator.getRandomChainGraph(	0, 0, 0,				//top left (x,y,z)
 														513, 513, 513,		 	//bottom right (x,y,z)
 														81, 144, 				//min/max nodes per subgraph
-														10, 11,					//min/max subgraphs
+														10, 12,					//min/max subgraphs
 														20, 60);				//min/max size of subgraphs
 
 		//System.out.println(g.toString());
@@ -41,10 +41,12 @@ public class Main {
 
     	GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     	GraphicsDevice gd = ge.getDefaultScreenDevice();
-    	//frame.setVisible(true);
     	
-    	frame.setUndecorated(true);
-    	gd.setFullScreenWindow(frame);
+    	frame.setSize(800, 600);
+    	frame.setVisible(true);
+    	
+    	//frame.setUndecorated(true);
+    	//gd.setFullScreenWindow(frame);
 
         
 //        // by default, an AWT Frame doesn't do anything when you click
