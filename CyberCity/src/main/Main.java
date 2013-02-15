@@ -3,6 +3,8 @@ package main;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
@@ -49,14 +51,14 @@ public class Main {
     	//gd.setFullScreenWindow(frame);
 
         
-//        // by default, an AWT Frame doesn't do anything when you click
-//        // the close button; this bit of code will terminate the program when
-//        // the window is asked to close
-//        frame.addWindowListener(new WindowAdapter() {
-//            public void windowClosing(WindowEvent e) {
-//                System.exit(0);
-//            }
-//        });
+        // by default, an AWT Frame doesn't do anything when you click
+        // the close button; this bit of code will terminate the program when
+        // the window is asked to close
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
         
         JOGLGraph joglGraph = new JOGLGraph(g, cityGenerator.getHeightMap(), 513);
         
