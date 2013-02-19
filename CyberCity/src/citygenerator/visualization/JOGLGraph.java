@@ -21,7 +21,6 @@ import javax.media.opengl.glu.GLU;
 public class JOGLGraph implements GLEventListener, MouseListener,
 		MouseWheelListener, MouseMotionListener {
 
-	private Point3D size; //TODO
 	private ArrayList<Point3D> points = new ArrayList<Point3D>();
 	private HashMap<Point3D, ArrayList<Point3D>> edges = new HashMap<Point3D, ArrayList<Point3D>>();
 
@@ -36,13 +35,13 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 
 	private double[][] heightMap;
 	private double dataSize;
+	private double halfSize;
 
-	public JOGLGraph(Graph g, double[][] map, int dataSize) {
+	public JOGLGraph(Graph g, double[][] map, double dataSize) {
 
 		heightMap = map;
 		this.dataSize = dataSize;
-		
-		this.size = g.getSize();
+		this.halfSize = dataSize/2.0;
 		for (CityNode n : g.getAllNodes()) {
 			double x=n.getCoordinates().x, y=n.getCoordinates().y, z=n.getCoordinates().z;
 			points.add(new Point3D(x, y, z));
@@ -60,7 +59,7 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 
 	@Override
 	public void init(GLAutoDrawable drawable) {
-		drawable.getGL().setSwapInterval(1); // VSync
+		//drawable.getGL().setSwapInterval(1); // VSync
 	}
 
 	@Override
@@ -117,8 +116,8 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 		for (int i = 0; i < dataSize; i++) {
 			gl.glBegin(GL.GL_LINE_STRIP);
 			for (int j = 0; j < dataSize; j++) {
-				gl.glVertex3d(-256.0 + 512.0 * (i / dataSize), heightMap[i][j],
-						-256.0 + 512.0 * (j / dataSize));
+				gl.glVertex3d(-halfSize + dataSize * (i / dataSize), heightMap[i][j],
+						-halfSize + dataSize * (j / dataSize));
 			}
 			gl.glEnd();
 		}
@@ -126,8 +125,8 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 		for (int j = 0; j < dataSize; j++) {
 			gl.glBegin(GL.GL_LINE_STRIP);
 			for (int i = 0; i < dataSize; i++) {
-				gl.glVertex3d( -256.0 + 512.0 * (i / dataSize), heightMap[i][j],
-						-256.0 + 512.0 * (j / dataSize));
+				gl.glVertex3d( -halfSize + dataSize * (i / dataSize), heightMap[i][j],
+						-halfSize + dataSize * (j / dataSize));
 			}
 			gl.glEnd();
 		}
@@ -137,7 +136,7 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 		gl.glColor3f(0, 1, 0);
 
 		for (Point3D p : points) {
-			gl.glVertex3d(p.x - 256, p.y, p.z - 256);
+			gl.glVertex3d(p.x - halfSize, p.y, p.z - halfSize);
 		}
 		gl.glEnd();
 
@@ -145,8 +144,8 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 		gl.glBegin(GL.GL_LINES);
 		for (Point3D from : edges.keySet()) {
 			for (Point3D to : edges.get(from)) {
-				gl.glVertex3d(from.x - 256, from.y, from.z - 256);
-				gl.glVertex3d(to.x - 256, to.y, to.z - 256);
+				gl.glVertex3d(from.x - halfSize, from.y, from.z - halfSize);
+				gl.glVertex3d(to.x - halfSize, to.y, to.z - halfSize);
 			}
 		}
 		gl.glEnd();
