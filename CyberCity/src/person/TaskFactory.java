@@ -1,5 +1,5 @@
 package person;
 
-public class TaskFactory {
+public interface TaskFactory {
 
 }

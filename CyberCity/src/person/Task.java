@@ -1,5 +1,9 @@
 package person;
 
-public class Task {
+import java.util.ArrayList;
 
+
+public class Task {
+ArrayList<Action> actionsArrayList = new ArrayList<Action>();
 }
+
