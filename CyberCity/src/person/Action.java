@@ -1,5 +1,5 @@
 package person;
 
-public class Action {
+public abstract class Action {
 
 }

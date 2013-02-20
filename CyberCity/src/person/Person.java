@@ -15,7 +15,7 @@ public class Person {
 		Date birthDate;
 		genders gender;
 	}
-	
+
 	PriorityQueue<Task> personPriorityQueue = new PriorityQueue<Task>();
-	
+
 }
