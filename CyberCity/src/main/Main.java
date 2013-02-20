@@ -20,12 +20,14 @@ import citygenerator.graph.Graph;
 
 public class Main {
 	
+	static final int SIZE = 513;
+	
 	public static void main(String[] args) throws IllegalAccessException, InstantiationException {
 		
-		HeightMapGenerator hmg = new HeightMapGenerator(513);
+		HeightMapGenerator hmg = new HeightMapGenerator(SIZE);
 		CityGenerator cityGenerator = new CityGenerator(hmg);
 		Graph g = cityGenerator.getRandomChainGraph(	0, 0, 0,				//top left (x,y,z)
-														513, 513, 513,		 	//bottom right (x,y,z)
+														SIZE, SIZE, SIZE,		 	//bottom right (x,y,z)
 														81, 144, 				//min/max nodes per subgraph
 														10, 12,					//min/max subgraphs
 														20, 60);				//min/max size of subgraphs
@@ -60,7 +62,7 @@ public class Main {
             }
         });
         
-        JOGLGraph joglGraph = new JOGLGraph(g, cityGenerator.getHeightMap(), 513);
+        JOGLGraph joglGraph = new JOGLGraph(g, cityGenerator.getHeightMap(), SIZE);
         
         canvas.addGLEventListener(joglGraph);
         canvas.addMouseListener(joglGraph);
