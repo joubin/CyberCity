@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public abstract class Graph implements Locale{
 
 	private ArrayList<CityNode> nodes = new ArrayList<CityNode>();
-	private ArrayList<CityEdge> edges = new ArrayList<CityEdge>();
 	private ArrayList<Graph> subGraphs = new ArrayList<Graph>();
 	protected Point3D size;
 	protected Point3D minimumPoint;
@@ -43,25 +42,26 @@ public abstract class Graph implements Locale{
 	public void addEdge(CityNode n1, CityNode n2, CityEdge edge){
 		
 		boolean edgeExists = false, reverseExists = false;
-		for (CityEdge e : edges){
-			CityNode from = e.getFromNode(), to = e.getToNode();
-			if(from.getName().equals(n1.getName()) && to.getName().equals(n2.getName())){
-				edgeExists = true;
-			}
-			if(from.equals(n2) && to.equals(n1)){
-				reverseExists = true;
-			}
-		}
+
+        for (CityEdge e : n1.getAdjacentNodes()){
+            if(e.getToNode().getName().equals(n2.getName()))
+                edgeExists = true;
+        }
+
+        for (CityEdge e : n2.getAdjacentNodes()){
+            if(e.getToNode().getName().equals(n1.getName()))
+                reverseExists = true;
+        }
+
 		if(!edgeExists){
-			edges.add(edge);
-			n1.addAdjacentNode(n2);
+			n1.addAdjacentNode(edge);
 		}
 
 		if(!reverseExists){
-			CityEdge reverseRoad = edge.getReverse();
-			edges.add(reverseRoad);
-			n2.addAdjacentNode(n1);
+			CityEdge reverse = edge.getReverse();
+			n2.addAdjacentNode(reverse);
 		}
+
 	}
 	
 	@Override
@@ -69,36 +69,36 @@ public abstract class Graph implements Locale{
 		StringBuilder sb = new StringBuilder();
 		sb.append("[\n");
 		
-		int count = 1;
-		for(CityNode node : nodes){
-			sb.append("\t" + node.getName());
-			if(count < nodes.size()){
-				sb.append(",\n");
-			}
-			count++;
-		}
-		sb.append("\n],\n[\n");
-		
-		count = 1;
-		for(CityEdge edge : edges){
-			sb.append("\t{" + edge.getFromNode().getName() + "," + edge.getToNode().getName() + "}");
-			if(count < edges.size()){
-				sb.append(",\n");
-			}
-			count++;
-		}
+//		int count = 1;
+//		for(CityNode node : nodes){
+//			sb.append("\t" + node.getName());
+//			if(count < nodes.size()){
+//				sb.append(",\n");
+//			}
+//			count++;
+//		}
+//		sb.append("\n],\n[\n");
+//
+//		count = 1;
+//		for(CityEdge edge : edges){
+//			sb.append("\t{" + edge.getFromNode().getName() + "," + edge.getToNode().getName() + "}");
+//			if(count < edges.size()){
+//				sb.append(",\n");
+//			}
+//			count++;
+//		}
 		
 		sb.append("\n]");
 		return sb.toString();
 	}
 	
-	public CityNode getNodeByName(String name){
-		for(CityNode node : nodes){
-			if(node.getName().equals(name))
-				return node;
-		}
-		return null;
-	}
+//	public CityNode getNodeByName(String name){
+//		for(CityNode node : nodes){
+//			if(node.getName().equals(name))
+//				return node;
+//		}
+//		return null;
+//	}
 
 	public ArrayList<CityNode> getNodes() {
 		return nodes;
@@ -112,27 +112,14 @@ public abstract class Graph implements Locale{
 		}
 		return allNodes;
 	}
-
-	public ArrayList<CityEdge> getEdges() {
-		return edges;
-	}
 	
 	public void addSubGraph(Graph g){
 		this.subGraphs.add(g);
 	}
 	
-	public ArrayList<Graph> getSubGraphs(){
-		return subGraphs;
-	}
-
-	public ArrayList<CityEdge> getAllEdges() {
-		ArrayList<CityEdge> allEdges = new ArrayList<CityEdge>();
-		allEdges.addAll(edges);
-		for(Graph g : subGraphs){
-			allEdges.addAll(g.getAllEdges());
-		}
-		return allEdges;
-	}
+//	public ArrayList<Graph> getSubGraphs(){
+//		return subGraphs;
+//	}
 	
 	public void setSize(Point3D sizes){
 		this.size = sizes;

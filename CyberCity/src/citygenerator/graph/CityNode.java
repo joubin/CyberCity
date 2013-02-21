@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public interface CityNode {
 
-	public ArrayList<CityNode> getAdjacentNodes();
-	public void addAdjacentNode(CityNode to);
+	public ArrayList<CityEdge> getAdjacentNodes();
+	public void addAdjacentNode(CityEdge to);
 	
 	public String getName();
 	

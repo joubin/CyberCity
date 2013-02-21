@@ -1,5 +1,6 @@
 package citygenerator.visualization;
 
+import citygenerator.graph.CityEdge;
 import citygenerator.graph.CityNode;
 import citygenerator.graph.Graph;
 import citygenerator.graph.Point3D;
@@ -47,8 +48,9 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 			points.add(new Point3D(x, y, z));
 
 			ArrayList<Point3D> adjacentPoints = new ArrayList<Point3D>();
-			for (CityNode adj : n.getAdjacentNodes()) {
-				double ax=adj.getCoordinates().x, ay=adj.getCoordinates().y, az=adj.getCoordinates().z;
+			for (CityEdge adj : n.getAdjacentNodes()) {
+
+				double ax=adj.getToNode().getCoordinates().x, ay=adj.getToNode().getCoordinates().y, az=adj.getToNode().getCoordinates().z;
 				adjacentPoints.add(new Point3D(ax, ay, az));
 			}
 

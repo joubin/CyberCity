@@ -1,20 +1,17 @@
 package citygenerator.generator;
 
+import citygenerator.graph.CityEdge;
 import citygenerator.graph.CityNode;
 import citygenerator.graph.Point3D;
 
-import java.awt.Point;
 import java.util.ArrayList;
 
 public class Building implements CityNode {
 
-	private ArrayList<CityNode> adjacentNodes = new ArrayList<CityNode>();
+	private ArrayList<CityEdge> adjacentNodes = new ArrayList<CityEdge>();
 	private String name;
 	private Point3D coordinates;
-	
-	public Building () {
-		
-	}
+
 	
 	public Building (String name, Point3D coordinates){
 		setName(name);
@@ -22,7 +19,7 @@ public class Building implements CityNode {
 	}
 
 	@Override
-	public ArrayList<CityNode> getAdjacentNodes() {
+	public ArrayList<CityEdge> getAdjacentNodes() {
 		return adjacentNodes;
 	}
 
@@ -47,7 +44,10 @@ public class Building implements CityNode {
 	}
 
 	@Override
-	public void addAdjacentNode(CityNode to) {
+	public void addAdjacentNode(CityEdge to) {
+        if(!to.getFromNode().equals(this))
+            throw new Error(" New edge's origin node should be " + name + ", but is not");
+
 		adjacentNodes.add(to);
 	}
 	

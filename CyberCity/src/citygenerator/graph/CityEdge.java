@@ -1,7 +1,7 @@
 package citygenerator.graph;
 
 public interface CityEdge {
-	
+
 	public void setLength(double d);
 	
 	public double getLength();

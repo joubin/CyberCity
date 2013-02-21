@@ -1,10 +1,8 @@
 package citygenerator.generator;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Random;
 
-import citygenerator.graph.CityEdge;
 import citygenerator.graph.CityNode;
 import citygenerator.graph.Graph;
 import citygenerator.graph.Point3D;
@@ -66,13 +64,12 @@ public class Downtown extends Graph {
 
 	@Override
 	public Point.Double requestPoint() {
-		Point.Double p = points[currentX][currentZ];
-		return p;
+		return points[currentX][currentZ];
 	}
 
 	private void updateEdges(CityNode cn) {
 		
-		CityNode toNode = null;
+		CityNode toNode;
 
 		if (currentX - 1 >= 0 && grid[currentX - 1][currentZ] != null) {
 			Road edge = new Road();
@@ -123,21 +120,13 @@ public class Downtown extends Graph {
 	public CityNode getEdgeNode(Point3D otherPoint) {
 		boolean isBelowX, isBelowZ;
 		Point3D middle = new Point3D(minimumPoint.x + size.x, minimumPoint.y, minimumPoint.z + size.z);
-		
-		if(otherPoint.x < middle.x)
-			isBelowX = true;
-		else {
-			isBelowX = false;
-		}
-		
-		if(otherPoint.z < middle.z)
-			isBelowZ = true;
-		else {
-			isBelowZ = false;
-		}
+
+        isBelowX = otherPoint.x < middle.x;
+
+        isBelowZ = otherPoint.z < middle.z;
 		
 		
-		boolean isXVar = Math.abs(otherPoint.z - middle.z) >  Math.abs(otherPoint.x - middle.x) ? true : false;
+		boolean isXVar = Math.abs(otherPoint.z - middle.z) > Math.abs(otherPoint.x - middle.x);
 		int x, z;
 		
 		x = new Random().nextInt(root);
@@ -168,7 +157,7 @@ public class Downtown extends Graph {
 		
 		while(grid[x][z] == null){
 			x--;
-		};
+		}
 		return grid[x][z];
 	}
 
