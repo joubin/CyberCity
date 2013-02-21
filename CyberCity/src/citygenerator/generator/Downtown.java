@@ -21,7 +21,7 @@ public class Downtown extends Graph {
 
 	@Override
 	public CityNode setNext(Point3D point) {
-		CityNode cn = new Building(name + "_" + getNodes().size(), point);
+		CityNode cn = new Residence(name + "_" + getNodes().size(), point);
 
 		grid[currentX][currentZ] = cn;
 
@@ -38,8 +38,8 @@ public class Downtown extends Graph {
 
 		root = (int) Math.ceil(Math.sqrt(maxSize));
 
-		grid = new CityNode[root][root];
-		points = new Point.Double[root][root];
+		grid = new CityNode[root + 1][root + 1];
+		points = new Point.Double[root + 1][root + 1];
 
 		for (int i = 0; i < root; i++) {
 			for (int j = 0; j < root; j++) {

@@ -8,8 +8,10 @@ public class Road implements CityEdge {
 	private double length;
 	private CityNode from, to;
 	private float waterFlowCap, electricFlowCap;
-	
-	public Road(){
+    private float[] color = {0F, 1F, 0F};
+    private CityEdge reverse;
+
+    public Road(){
 
 	}
 	
@@ -60,7 +62,7 @@ public class Road implements CityEdge {
 	}
 	
 	@Override
-	public CityEdge getReverse(){
+	public CityEdge createReverse(){
 		Road reverseRoad = new Road();
 		reverseRoad.setNodes(to, from);
 		reverseRoad.setLength(length);
@@ -68,8 +70,30 @@ public class Road implements CityEdge {
 		reverseRoad.setWaterFlowCap(getWaterFlowCap());
 		return reverseRoad;
 	}
-	
-	public String toString(){
+
+    @Override
+    public float[] getColor() {
+        return color;
+    }
+
+    @Override
+    public void setColor(float[] color, boolean isReverse){
+       this.color = color;
+        if(reverse != null && !isReverse)
+            reverse.setColor(color, true);
+    }
+
+    @Override
+    public CityEdge getReverse() {
+        return reverse; 
+    }
+
+    @Override
+    public void setReverse(CityEdge reverse) {
+        this.reverse = reverse;
+    }
+
+    public String toString(){
 		return "From " + from + " to " + to;
 	}
 	

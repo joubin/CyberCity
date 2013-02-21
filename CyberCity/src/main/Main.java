@@ -26,15 +26,19 @@ public class Main {
 		
 		HeightMapGenerator hmg = new HeightMapGenerator(SIZE);
 		CityGenerator cityGenerator = new CityGenerator(hmg);
-		Graph g = cityGenerator.getRandomChainGraph(	0, 0, 0,				//top left (x,y,z)
-														SIZE, SIZE, SIZE,		 	//bottom right (x,y,z)
-														81, 144, 				//min/max nodes per subgraph
-														10, 12,					//min/max subgraphs
-														20, 60);				//min/max size of subgraphs
+		Graph g = cityGenerator.getTerribleGraph(   0, 0, 0,                //top left (x,y,z)
+                                                    SIZE, SIZE, SIZE,       //bottom right (x,y,z)
+                                                    81, 144,                //min/max nodes per subgraph
+                                                    7, 8,                 //min/max subgraphs
+                                                    20, 30);				//min/max size of subgraphs
 
-		//System.out.println(g.toString());
-	
-		///////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////
+        //TODO command line options to enable/disable this
+        g.buildRoutingTable();
+
+        //Show pathfinding capability
+        g.highlightPath();
+		/////////////////////////////////
 		
         GLProfile glp = GLProfile.getDefault();
         GLCapabilities caps = new GLCapabilities(glp);
@@ -68,6 +72,7 @@ public class Main {
         canvas.addMouseListener(joglGraph);
         canvas.addMouseWheelListener(joglGraph);
         canvas.addMouseMotionListener(joglGraph);
+        canvas.addKeyListener(joglGraph);
         
         FPSAnimator animator = new FPSAnimator(canvas, 60);
         animator.add(canvas);

@@ -1,6 +1,7 @@
 package citygenerator.graph;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class Graph implements Locale{
 
@@ -43,6 +44,8 @@ public abstract class Graph implements Locale{
 		
 		boolean edgeExists = false, reverseExists = false;
 
+        CityEdge reverse = edge.createReverse();
+
         for (CityEdge e : n1.getAdjacentNodes()){
             if(e.getToNode().getName().equals(n2.getName()))
                 edgeExists = true;
@@ -54,12 +57,13 @@ public abstract class Graph implements Locale{
         }
 
 		if(!edgeExists){
+            edge.setReverse(reverse);
 			n1.addAdjacentNode(edge);
 		}
 
 		if(!reverseExists){
-			CityEdge reverse = edge.getReverse();
 			n2.addAdjacentNode(reverse);
+            reverse.setReverse(edge);
 		}
 
 	}
@@ -147,5 +151,80 @@ public abstract class Graph implements Locale{
 //		}
 //		return true;
 //	}
-	
+
+    public void buildRoutingTable(){
+        long start, end;
+        start = System.currentTimeMillis();
+        System.out.print("Creating routing table...");
+        for (CityNode n : getAllNodes()){
+            clearRoutingData();
+
+            n.setDistance(0);
+
+            CityNode u, v = null;
+            while((u = getShortestDistance()) != null){
+                v = u;
+                u.setDone(true);
+                //test is u.distance is Double.MAX for error-safeness
+
+                for(CityEdge e : u.getAdjacentNodes()){
+                    double temp = u.getDistance() + e.getLength();
+                    if(temp < e.getToNode().getDistance()){
+                        e.getToNode().setDistance(temp);
+                        e.getToNode().setPreviousNode(u);
+                    }
+                }
+            }
+
+            for(CityNode destination : getAllNodes()){
+                CityNode nextHop = null, temp = destination;
+                if(temp == n)
+                    continue;
+                while(!temp.getPreviousNode().equals(n)){
+                    temp = temp.getPreviousNode();
+                    nextHop = temp;
+                }
+
+                if(nextHop == null)
+                    nextHop = destination;
+
+                n.registerNextHop(destination, nextHop);
+            }
+        }
+        end = System.currentTimeMillis();
+        System.out.println(" done in " + (end - start)/1000.0 + " seconds");
+    }
+
+    private CityNode getShortestDistance() {
+        double minDistance = -1;
+        CityNode returnNode = null;
+
+        for(CityNode u : getAllNodes()){
+            if((u.getDistance() < minDistance || minDistance == -1) && !u.isDone()){
+                minDistance = u.getDistance();
+                returnNode = u;
+            }
+        }
+        return returnNode;
+    }
+
+    private void clearRoutingData(){
+        for(CityNode n : getAllNodes()){
+            n.clearRoutingData();
+        }
+    }
+
+    public void highlightPath(){
+        CityNode from = getAllNodes().get(new Random().nextInt(getAllNodes().size()));
+        CityNode to = getAllNodes().get(new Random().nextInt(getAllNodes().size()));
+        while(!from.equals(to)){
+            CityNode nextHop = from.nextHop(to);
+            for(CityEdge e : from.getAdjacentNodes()){
+                if(e.getToNode() == nextHop){
+                    e.setColor(new float[] {1F, 0F, 0F}, false);
+                }
+            }
+            from = nextHop;
+        }
+    }
 }

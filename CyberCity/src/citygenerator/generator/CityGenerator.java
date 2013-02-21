@@ -20,13 +20,14 @@ public class CityGenerator {
 		rand.setSeed(System.currentTimeMillis());
 	}
 
-	public Graph getRandomChainGraph(	double minX, double minY, double minZ,
-										double width, double height, double depth,
-										int minNodes, int maxNodes,
-										int minSubs, int maxSubs,
-										double minSubSize, double maxSubSize)
+	public Graph getTerribleGraph(double minX, double minY, double minZ,
+                                  double width, double height, double depth,
+                                  int minNodes, int maxNodes,
+                                  int minSubs, int maxSubs,
+                                  double minSubSize, double maxSubSize)
 										throws IllegalAccessException, InstantiationException {
-		
+
+        System.out.print("Generating terribly laid out graph...");
 		parent.setMinimumPoint(new Point3D(minX, minY, minZ));
 		parent.setMaxSize(maxNodes * maxSubs);
 		parent.setSize(new Point3D(width-minX, height-minY, depth-minZ));		
@@ -84,6 +85,7 @@ public class CityGenerator {
 						
 						Road connector = new Road();
 						connector.setNodes(lastConnector, connectNode);
+                        connector.setLength(lastConnector.getCoordinates().distance(connectNode.getCoordinates()));
 						parent.addEdge(lastConnector, connectNode, connector);
 						
 						lastConnectPoint = new Point3D(corner.x + size, corner.y, corner.z + size);
@@ -94,7 +96,7 @@ public class CityGenerator {
 			
 			parent.addSubGraph(sg);			
 		}
-		
+        System.out.println(" done");
 		return parent;
 	}
 

@@ -18,6 +18,7 @@ public class HeightMapGenerator {
 	
 	public double[][] getMap() {
 
+        System.out.print("Creating heightmap...");
 		// seed the data
 		data[0][0] = data[0][DATA_SIZE - 1] = data[DATA_SIZE - 1][0] = data[DATA_SIZE - 1][DATA_SIZE - 1] = SEED;
 
@@ -97,6 +98,7 @@ public class HeightMapGenerator {
 				}
 			}
 		}
+        System.out.println(" done");
 		return data;
 	}
 	

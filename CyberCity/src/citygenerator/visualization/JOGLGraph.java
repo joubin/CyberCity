@@ -5,13 +5,11 @@ import citygenerator.graph.CityNode;
 import citygenerator.graph.Graph;
 import citygenerator.graph.Point3D;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -20,7 +18,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.glu.GLU;
 
 public class JOGLGraph implements GLEventListener, MouseListener,
-		MouseWheelListener, MouseMotionListener {
+		MouseWheelListener, MouseMotionListener, KeyListener {
 
 	private ArrayList<Point3D> points = new ArrayList<Point3D>();
 	private HashMap<Point3D, ArrayList<Point3D>> edges = new HashMap<Point3D, ArrayList<Point3D>>();
@@ -38,25 +36,49 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 	private double dataSize;
 	private double halfSize;
 
-	public JOGLGraph(Graph g, double[][] map, double dataSize) {
+    private double xOffset = 0;
+    private double zOffset = 0;
+
+    private ArrayList<CityNode> allNodes;
+    private double xInput;
+    private double zInput;
+
+    public JOGLGraph(Graph g, double[][] map, double dataSize) {
 
 		heightMap = map;
 		this.dataSize = dataSize;
 		this.halfSize = dataSize/2.0;
-		for (CityNode n : g.getAllNodes()) {
-			double x=n.getCoordinates().x, y=n.getCoordinates().y, z=n.getCoordinates().z;
-			points.add(new Point3D(x, y, z));
 
-			ArrayList<Point3D> adjacentPoints = new ArrayList<Point3D>();
-			for (CityEdge adj : n.getAdjacentNodes()) {
+        allNodes = g.getAllNodes();
+//		for (CityNode n : g.getAllNodes()) {
+//			double x=n.getCoordinates().x, y=n.getCoordinates().y, z=n.getCoordinates().z;
+//			points.add(new Point3D(x, y, z));
+//
+//			ArrayList<Point3D> adjacentPoints = new ArrayList<Point3D>();
+//			for (CityEdge adj : n.getAdjacentNodes()) {
+//
+//				double ax=adj.getToNode().getCoordinates().x, ay=adj.getToNode().getCoordinates().y, az=adj.getToNode().getCoordinates().z;
+//				adjacentPoints.add(new Point3D(ax, ay, az));
+//			}
+//
+//			edges.put(new Point3D(x, y, z), adjacentPoints);
+//
+//		}
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                double radTheta = Math.toRadians(theta);
 
-				double ax=adj.getToNode().getCoordinates().x, ay=adj.getToNode().getCoordinates().y, az=adj.getToNode().getCoordinates().z;
-				adjacentPoints.add(new Point3D(ax, ay, az));
-			}
+                xOffset += zInput * Math.cos(radTheta);
+                zOffset += zInput * Math.sin(radTheta);
 
-			edges.put(new Point3D(x, y, z), adjacentPoints);
+                xOffset += xInput * Math.cos(radTheta - Math.PI / 2.0);
+                zOffset += xInput * Math.sin(radTheta - Math.PI / 2.0);
 
-		}
+               // (xInput * Math.cos(radTheta))      + (xInput * Math.sin(radTheta))
+            }
+        }, 0, 16);
 	}
 
 	@Override
@@ -118,8 +140,8 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 		for (int i = 0; i < dataSize; i++) {
 			gl.glBegin(GL.GL_LINE_STRIP);
 			for (int j = 0; j < dataSize; j++) {
-				gl.glVertex3d(-halfSize + dataSize * (i / dataSize), heightMap[i][j],
-						-halfSize + dataSize * (j / dataSize));
+				gl.glVertex3d(dataSize * (i / dataSize), heightMap[i][j],
+						dataSize * (j / dataSize));
 			}
 			gl.glEnd();
 		}
@@ -127,29 +149,34 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 		for (int j = 0; j < dataSize; j++) {
 			gl.glBegin(GL.GL_LINE_STRIP);
 			for (int i = 0; i < dataSize; i++) {
-				gl.glVertex3d( -halfSize + dataSize * (i / dataSize), heightMap[i][j],
-						-halfSize + dataSize * (j / dataSize));
+				gl.glVertex3d( dataSize * (i / dataSize), heightMap[i][j],
+						dataSize * (j / dataSize));
 			}
 			gl.glEnd();
 		}
 		
 		//Draw nodes
 		gl.glBegin(GL.GL_POINTS);
-		gl.glColor3f(0, 1, 0);
 
-		for (Point3D p : points) {
-			gl.glVertex3d(p.x - halfSize, p.y, p.z - halfSize);
-		}
-		gl.glEnd();
+        for(CityNode n : allNodes){
+            gl.glColor3fv(n.getColor(), 0);
+            Point3D p = n.getCoordinates();
+            gl.glVertex3d(p.x, p.y, p.z);
+        }
+        gl.glEnd();
 
-		//Draw Edges
-		gl.glBegin(GL.GL_LINES);
-		for (Point3D from : edges.keySet()) {
-			for (Point3D to : edges.get(from)) {
-				gl.glVertex3d(from.x - halfSize, from.y, from.z - halfSize);
-				gl.glVertex3d(to.x - halfSize, to.y, to.z - halfSize);
-			}
-		}
+        //Draw edges
+        gl.glBegin(GL.GL_LINES);
+        for(CityNode n : allNodes){
+            Point3D p = n.getCoordinates();
+            for (CityEdge to : n.getAdjacentNodes()) {
+                gl.glColor3fv(to.getColor(), 0);
+                CityNode toNode = to.getToNode();
+                Point3D toPoint = toNode.getCoordinates();
+                gl.glVertex3d(p.x, p.y, p.z);
+                gl.glVertex3d(toPoint.x, toPoint.y, toPoint.z);
+            }
+        }
 		gl.glEnd();
 	}
 
@@ -168,10 +195,11 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 		double radPhi = phi * Math.PI / 180.0;
 		double radTheta = theta * Math.PI / 180.0;
 
-		glu.gluLookAt(distance * Math.cos(radTheta) * Math.sin(radPhi),
+		glu.gluLookAt(distance * Math.cos(radTheta) * Math.sin(radPhi) + halfSize + xOffset,
 				distance * Math.cos(radPhi),
-				distance * Math.sin(radPhi) * Math.sin(radTheta), 0, 0, 0, 0,
-				1, 0);
+				distance * Math.sin(radPhi) * Math.sin(radTheta) + halfSize + zOffset,
+                halfSize + xOffset, 0, halfSize + zOffset,
+                0, 1, 0);
 
 		// Change back to model view matrix.
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -241,8 +269,43 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
+
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getKeyChar() == 'w'){
+            zInput = -1;
+        }
+        if(keyEvent.getKeyChar() == 'a'){
+            xInput = -1;
+        }
+        if(keyEvent.getKeyChar() == 's'){
+            zInput = 1;
+        }
+        if(keyEvent.getKeyChar() == 'd'){
+            xInput = 1;
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent keyEvent) {
+        if(keyEvent.getKeyChar() == 'w' && zInput != 1){
+            zInput = 0;
+        }
+        if(keyEvent.getKeyChar() == 'a' && xInput != 1){
+            xInput = 0;
+        }
+        if(keyEvent.getKeyChar() == 's' && zInput != -1){
+            zInput = 0;
+        }
+        if(keyEvent.getKeyChar() == 'd' && xInput != -1){
+            xInput = 0;
+        }
+    }
 
 }
