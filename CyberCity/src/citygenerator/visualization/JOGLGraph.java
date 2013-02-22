@@ -20,9 +20,6 @@ import javax.media.opengl.glu.GLU;
 public class JOGLGraph implements GLEventListener, MouseListener,
 		MouseWheelListener, MouseMotionListener, KeyListener {
 
-	private ArrayList<Point3D> points = new ArrayList<Point3D>();
-	private HashMap<Point3D, ArrayList<Point3D>> edges = new HashMap<Point3D, ArrayList<Point3D>>();
-
 	private float widthHeightRatio = 1F;
 	private float distance = 500F;
 
@@ -37,12 +34,17 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 	private double halfSize;
 
     private double xOffset = 0;
+    private double yOffset = 0;
     private double zOffset = 0;
 
     private ArrayList<CityNode> allNodes;
-    private double xInput;
-    private double zInput;
+    private double xInput = 0;
+    private double zInput = 0;
+    private double yInput = 0;
 
+    private double sinTheta = 0, cosTheta = 0, sinThetaMinPi = 0, cosThetaMinPi = 0;
+
+    private double oldTheta = 0;
     public JOGLGraph(Graph g, double[][] map, double dataSize) {
 
 		heightMap = map;
@@ -64,21 +66,46 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 //			edges.put(new Point3D(x, y, z), adjacentPoints);
 //
 //		}
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        Timer moveTimer = new Timer();
+        Timer angleTimer = new Timer();
+
+        angleTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+
+                if(xInput == 0 && zInput == 0 && theta == oldTheta){
+                    oldTheta = theta;
+                    return;
+                }
+
                 double radTheta = Math.toRadians(theta);
+                double radThetaMinPi = Math.toRadians(theta - 90);
+                sinTheta = Math.sin(radTheta);
+                cosTheta = Math.cos(radTheta);
+                sinThetaMinPi = Math.sin(radThetaMinPi);
+                cosThetaMinPi = Math.cos(radThetaMinPi);
 
-                xOffset += zInput * Math.cos(radTheta);
-                zOffset += zInput * Math.sin(radTheta);
-
-                xOffset += xInput * Math.cos(radTheta - Math.PI / 2.0);
-                zOffset += xInput * Math.sin(radTheta - Math.PI / 2.0);
-
-               // (xInput * Math.cos(radTheta))      + (xInput * Math.sin(radTheta))
             }
-        }, 0, 16);
+        }, 0, 300);
+
+        moveTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                if(xInput == 0 && zInput == 0 && yInput == 0)
+                    return;
+
+                xOffset += zInput * cosTheta;
+                zOffset += zInput * sinTheta;
+
+                xOffset += xInput * cosThetaMinPi;
+                zOffset += xInput * sinThetaMinPi;
+
+                yOffset += yInput;
+
+                // (xInput * Math.cos(radTheta))      + (xInput * Math.sin(radTheta))
+            }
+        }, 0, 32);
 	}
 
 	@Override
@@ -196,9 +223,9 @@ public class JOGLGraph implements GLEventListener, MouseListener,
 		double radTheta = theta * Math.PI / 180.0;
 
 		glu.gluLookAt(distance * Math.cos(radTheta) * Math.sin(radPhi) + halfSize + xOffset,
-				distance * Math.cos(radPhi),
+				distance * Math.cos(radPhi) + yOffset,
 				distance * Math.sin(radPhi) * Math.sin(radTheta) + halfSize + zOffset,
-                halfSize + xOffset, 0, halfSize + zOffset,
+                halfSize + xOffset, yOffset, halfSize + zOffset,
                 0, 1, 0);
 
 		// Change back to model view matrix.
@@ -290,6 +317,12 @@ public class JOGLGraph implements GLEventListener, MouseListener,
         if(keyEvent.getKeyChar() == 'd'){
             xInput = 1;
         }
+        if(keyEvent.getKeyChar() == 'q'){
+            yInput = -1;
+        }
+        if(keyEvent.getKeyChar() == 'e'){
+            yInput = 1;
+        }
     }
 
     @Override
@@ -305,6 +338,12 @@ public class JOGLGraph implements GLEventListener, MouseListener,
         }
         if(keyEvent.getKeyChar() == 'd' && xInput != -1){
             xInput = 0;
+        }
+        if(keyEvent.getKeyChar() == 'q' && yInput != 1){
+            yInput = 0;
+        }
+        if(keyEvent.getKeyChar() == 'e' && yInput != -1){
+            yInput = 0;
         }
     }
 

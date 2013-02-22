@@ -6,6 +6,7 @@ import citygenerator.graph.Point3D;
 import person.Person;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public abstract class Building implements CityNode {
@@ -14,7 +15,6 @@ public abstract class Building implements CityNode {
 	private String name;
 	private Point3D coordinates;
     private ArrayList<Person> personList = new ArrayList<Person>();
-    //TODO FIXME
     public HashMap<CityNode, CityNode> nextHops = new HashMap<CityNode, CityNode>();
 
     //Routing Data
